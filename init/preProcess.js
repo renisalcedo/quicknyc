@@ -17,8 +17,10 @@ function preProcess() {
 
         GTFS_stations[key].push({ id, trains })
     }
-    return GTFS_stations;
 }
+preProcess();
 
-module.exports = preProcess;
+module.exports = {
+    stationsMapping: byGTFS
+};
 
