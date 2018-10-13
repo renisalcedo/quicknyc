@@ -30,6 +30,7 @@ TabContainer.propTypes = {
 const styles = theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
+    height: 250,
     width: 800,
     margin: '0 auto',
     palette: 'center'
