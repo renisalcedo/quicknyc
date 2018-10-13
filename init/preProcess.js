@@ -1,6 +1,7 @@
 const data = require('./station_info.json');
 
-let GTFS_stations = {};
+let byGTFS = {};
+let byStationName = {};
 
 function preProcess() {
     for(let i = 0; i < data.length; i++) {
@@ -8,9 +9,13 @@ function preProcess() {
         let key = arr["GTFS Stop ID"]
         let val = arr["Stop Name"];
         GTFS_stations[key] = val; 
+        byStationName[val] = key;
     }
-    return GTFS_stations;
 }
+preProcess();
 
-module.exports = preProcess;
+module.exports = {
+    byGTFS: byGTFS,
+    byStationName
+};
 
