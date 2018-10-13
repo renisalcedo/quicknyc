@@ -1,5 +1,6 @@
 // LOADS THE KEYS
 require('dotenv').config()
+const stationsMapping = require('../../init/preProcess')();
 
 // MTA DATA
 const GtfsRealtimeBindings = require('gtfs-realtime-bindings');
