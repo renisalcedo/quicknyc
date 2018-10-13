@@ -40,6 +40,14 @@ class MTA {
 
         return feed.entity
     }
+
+    filter() {
+        this.getData(1).then(d => {
+            const id = d[2].trip_update.stop_time_update[0].stop_id
+            console.log(id)
+            console.log(stationsMapping[id.substring(0,id.length-1)])
+        })
+    }
 }
 
 module.exports = new MTA()
