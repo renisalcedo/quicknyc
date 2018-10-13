@@ -52,15 +52,32 @@ class MTA {
         }
     }
 
-    getTimesForStation(station, train) {
-        const stationID = this.getStationId(station, train)
+    async getTimesForStation(station, train, dir) {
+        const stationID = this.getStationId(station, train)+dir
 
-        this.filter(train)
-        .then(data => {
-            console.log(data)
-            //data.map(.trip_update.stop_time_update.filter(location => location.stop_id === stationID))
+        const data = await this.filter(train)
+        let stations = []
+        for(let i = 0; i < data.length; i++) {
+            stations.push(...data[i].trip_update.stop_time_update)
+        }
+
+        //console.log(times)
+        const stationTimes = stations.filter(location => location.stop_id === stationID)
+
+        return stationTimes.map(stationTimes => { 
+            if(stationTimes.arrival != null) return this.getTime(stationTimes.arrival.time.low)
         })
-        .catch(err => console.log(err))
+    }
+
+    getTime(unixtime) {
+        const date = new Date(unixtime*1000)
+        const hours = date.getHours()
+        let minutes = date.getMinutes()
+        if(String(minutes).length < 2) {
+            minutes = "0" + minutes
+        }
+
+        return `${hours}:${minutes}`
     }
 
     async filter(train) {
