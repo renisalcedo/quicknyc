@@ -1,11 +1,13 @@
 // LOADS THE KEYS
 require('dotenv').config()
+//create the mappings from the real time station id to the name of the station
 const stationsMapping = require('../../init/preProcess')();
 
 // MTA DATA
 const GtfsRealtimeBindings = require('gtfs-realtime-bindings');
 const axios = require('axios')
 const key = process.env.MTA_KEY
+console.log(key);
 const mta_url = 'http://datamine.mta.info/mta_esi.php?'
 
 // SET ALL URL POINTS
@@ -41,13 +43,28 @@ class MTA {
         return feed.entity
     }
 
-    filter() {
-        this.getData(1).then(d => {
-            const id = d[2].trip_update.stop_time_update[0].stop_id
-            console.log(id)
-            console.log(stationsMapping[id.substring(0,id.length-1)])
-        })
+    async filter(train) {
+        let d = await this.getData(train);
+        let allData = [];
+        for(let i = 0; i < d.length; i++) {
+            if(d[i].trip_update && d[i].trip_update.stop_time_update[0]) {
+                let currData = d[i].trip_update.stop_time_update[0].stop_id
+                let currTrain = currData[0];
+                let station = currData.substring(0,3);
+
+                if(currTrain == train) {
+                    allData.push(d[i]);
+                }
+            }
+        }
+        return allData;
     }
+
+    async getTrainData(train) {
+        let data = await this.filter(train); 
+    }
+
 }
 
 module.exports = new MTA()
+
