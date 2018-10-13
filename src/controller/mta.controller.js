@@ -7,7 +7,6 @@ const {stationsMapping, findStationByName } = require('../../init/preProcess')()
 const GtfsRealtimeBindings = require('gtfs-realtime-bindings');
 const axios = require('axios')
 const key = process.env.MTA_KEY
-console.log(key);
 const mta_url = 'http://datamine.mta.info/mta_esi.php?'
 
 // SET ALL URL POINTS
@@ -41,6 +40,27 @@ class MTA {
         const feed = GtfsRealtimeBindings.FeedMessage.decode(body.data);
 
         return feed.entity
+    }
+
+    getStationId(station, train) {
+        const stations = stationsMapping[station]
+
+        for(let i = 0; i < stations.length; i++) {
+            if(String(stations[i].trains).indexOf(train) != -1) {
+                return stations[i].id
+            }
+        }
+    }
+
+    getTimesForStation(station, train) {
+        const stationID = this.getStationId(station, train)
+
+        this.filter(train)
+        .then(data => {
+            console.log(data)
+            //data.map(.trip_update.stop_time_update.filter(location => location.stop_id === stationID))
+        })
+        .catch(err => console.log(err))
     }
 
     async filter(train) {
