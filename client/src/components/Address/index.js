@@ -13,13 +13,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
 
 const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
   { label: 'Anguilla' },
   { label: 'Antarctica' },
   { label: 'Antigua and Barbuda' },
@@ -56,10 +49,11 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     height: 250,
+
   },
   input: {
     display: 'flex',
-    padding: 0,
+    padding: 10,
   },
   valueContainer: {
     display: 'flex',
@@ -248,7 +242,7 @@ class Address extends React.Component {
             classes={classes}
             styles={selectStyles}
             textFieldProps={{
-              label: 'Label',
+              label: 'End',
               InputLabelProps: {
                 shrink: true,
               },
