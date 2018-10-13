@@ -21,6 +21,6 @@ function preProcess() {
 preProcess();
 
 module.exports = {
-    stationsMapping: byGTFS
+    stationsMapping: GTFS_stations 
 };
 
