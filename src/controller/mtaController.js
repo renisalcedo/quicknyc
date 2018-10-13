@@ -3,39 +3,42 @@ require('dotenv').config()
 
 // MTA DATA
 const GtfsRealtimeBindings = require('gtfs-realtime-bindings');
-const request = require('request');
-
+const axios = require('axios')
 const key = process.env.MTA_KEY
-const url = new Map()
+const mta_url = 'http://datamine.mta.info/mta_esi.php?'
 
 // SET ALL URL POINTS
-url.set([1,2,3,4,5,6,'s'], `http://datamine.mta.info/mta_esi.php?key=${key}&feed_id=1`)
-url.set(['a', 'c', 'e'], `http://datamine.mta.info/mta_esi.php?key=${key}&feed_id=26`)
+const url = new Map()
+url.set([1,2,3,4,5,6,'s'], `${mta_url}key=${key}&feed_id=1`)
+url.set(['a', 'c', 'e'], `${mta_url}key=${key}&feed_id=26`)
+url.set(['n', 'q', 'r', 'w'], `${mta_url}key=${key}&feed_id=16`)
+url.set(['b', 'd', 'f', 'm'], `${mta_url}key=${key}&feed_id=21`)
+url.set(['l'], `${mta_url}key=${key}&feed_id=2`)
+url.set(['g'], `${mta_url}key=${key}&feed_id=31`)
+url.set(['j', 'z'], `${mta_url}key=${key}&feed_id=36`)
+url.set([7], `${mta_url}key=${key}&feed_id=51`)
 
-let endpoint = null
-function getEndPoint(train) {
-    url.forEach((val,key,map) => {
-        if (key.includes(train)) {
-            endpoint = val
-        }
-    })
+class MTA {
+    constructor() {
+        this.url= ""
+   }
+
+    getEndPoint(train) {
+        url.forEach((val,key,map) => {
+            if (key.includes(train)) {
+                this.url = val
+            }
+        })
+    }
+
+    async getData(train) {
+        this.getEndPoint(train)
+
+        const body = await axios.get(this.url, { responseType: 'arraybuffer'})
+        const feed = GtfsRealtimeBindings.FeedMessage.decode(body.data);
+
+        return feed.entity
+    }
 }
 
-getEndPoint(3)
-console.log(endpoint)
-var requestSettings = {
-  method: 'GET',
-  url: endpoint,
-  encoding: null
-};
-
-request(requestSettings, function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    var feed = GtfsRealtimeBindings.FeedMessage.decode(body);
-    feed.entity.forEach(function(entity) {
-      if (entity.trip_update) {
-        console.log(entity.trip_update);
-      }
-    });
-  }
-});
+module.exports = new MTA()
