@@ -12,17 +12,6 @@ class Transit {
         //this.getDurationTime()
     }
 
-    getTime(unixtime) {
-        const date = new Date(unixtime*1000)
-        const hours = date.getHours()
-        let minutes = date.getMinutes()
-        if(String(minutes).length < 2) {
-            minutes = "0" + minutes
-        }
-
-        return `${hours}:${minutes}`
-    }
-    
     async getDurationTime(to, from) {
         const apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?"
         to += ",NY"
