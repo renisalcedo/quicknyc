@@ -1,7 +1,7 @@
 // LOADS THE KEYS
 require('dotenv').config()
 //create the mappings from the real time station id to the name of the station
-const {stationsMapping} = require('../../init/preProcess')();
+const {stationsMapping} = require('../../init/preProcess');
 
 // MTA DATA
 const GtfsRealtimeBindings = require('gtfs-realtime-bindings');
@@ -65,9 +65,18 @@ class MTA {
         const stationTimes = stations.filter(location => location.stop_id === stationID)
 
         return stationTimes.map(stationTimes => { 
-            if(stationTimes.arrival != null) return this.getTime(stationTimes.arrival.time.low)
+            if(stationTimes.arrival != null) return this.timeFromNow(stationTimes.arrival.time.low);
         })
     }
+
+    timeFromNow(time) {
+        let later = new Date(time).getTime();
+        let now = new Date().getTime();
+        let diff = later - now;
+        let diffMinutes = new Date(diff).getMinutes();
+        return time;
+    }
+
 
     getTime(unixtime) {
         const date = new Date(unixtime*1000)
@@ -102,6 +111,8 @@ class MTA {
     }
 
 }
-
-module.exports = new MTA()
+let mta = new MTA();
+let x = mta.getTimesForStation('Times Sq - 42 St', 1, 'N');
+x.then(val => console.log(val));
+//module.exports = new MTA()
 
